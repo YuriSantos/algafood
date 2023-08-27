@@ -4,6 +4,9 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,7 @@ import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/restaurantes")
 public class RestauranteController {
@@ -31,14 +35,18 @@ public class RestauranteController {
 	
 	@Autowired
 	private CadastroRestauranteService cadastroRestaurante;
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(RestauranteController.class);
+
 	@GetMapping
 	public List<Restaurante> listar() {
+		LOGGER.info("Recebida a requisição de getRestaurantes");
 		return restauranteRepository.findAll();
 	}
 	
 	@GetMapping("/{restauranteId}")
 	public Restaurante buscar(@PathVariable Long restauranteId) {
+		LOGGER.info("Recebida a requisição de getRestaurante pelo restauranteId {}", restauranteId);
 		return cadastroRestaurante.buscarOuFalhar(restauranteId);
 	}
 	

@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.controller;
 import java.util.List;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/cidades")
 public class CidadeController {
