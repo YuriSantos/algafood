@@ -1,32 +1,21 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
-import com.algaworks.algafood.api.mapper.RestauranteConverter;
-import com.algaworks.algafood.domain.model.request.RestauranteRequest;
-import com.algaworks.algafood.domain.model.response.RestauranteResponse;
-import jakarta.validation.Valid;
-
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.algaworks.algafood.api.assembler.RestauranteInputDisassembler;
+import com.algaworks.algafood.api.assembler.RestauranteModelAssembler;
+import com.algaworks.algafood.api.model.RestauranteModel;
+import com.algaworks.algafood.api.model.input.RestauranteInput;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -40,48 +29,59 @@ public class RestauranteController {
 	private CadastroRestauranteService cadastroRestaurante;
 
 	@Autowired
-	private RestauranteConverter converter;
+	private RestauranteModelAssembler restauranteModelAssembler;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RestauranteController.class);
+	@Autowired
+	private RestauranteInputDisassembler restauranteInputDisassembler;
 
 	@GetMapping
-	public List<Restaurante> listar() {
-		LOGGER.info("Recebida a requisição de getRestaurantes");
-		return restauranteRepository.findAll();
+	public List<RestauranteModel> listar() {
+		return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
 	}
-	
+
 	@GetMapping("/{restauranteId}")
-	public RestauranteResponse buscar(@PathVariable Long restauranteId) {
-		LOGGER.info("Recebida a requisição de getRestaurante pelo restauranteId {}", restauranteId);
-		return converter.convert(cadastroRestaurante.buscarOuFalhar(restauranteId));
+	public RestauranteModel buscar(@PathVariable Long restauranteId) {
+		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
+
+		return restauranteModelAssembler.toModel(restaurante);
 	}
-	
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public RestauranteResponse adicionar(@RequestBody @Valid RestauranteRequest restauranteRequest) {
-		LOGGER.info("Recebida a requisição para adicionar um novo restaurante {}", restauranteRequest.toString());
+	public RestauranteModel adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
 		try {
-			return converter.convert(
-					cadastroRestaurante.salvar(converter.convert(restauranteRequest)));
+			Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
+
+			return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restaurante));
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
 	}
-	
+
 	@PutMapping("/{restauranteId}")
-	public RestauranteResponse atualizar(@PathVariable Long restauranteId,
-			@RequestBody @Valid RestauranteRequest restauranteRequest) {
-		LOGGER.info("Recebida a requisição para atualizar o novo restaurante {}", restauranteRequest.getNome());
+	public RestauranteModel atualizar(@PathVariable Long restauranteId,
+									  @RequestBody @Valid RestauranteInput restauranteInput) {
 		try {
 			Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
-			
-			BeanUtils.copyProperties(restauranteRequest, restauranteAtual,
-					"id", "formasPagamento", "endereco", "dataCadastro", "produtos");
 
-			return converter.convert(cadastroRestaurante.salvar(restauranteAtual));
+			restauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
+
+			return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restauranteAtual));
 		} catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
 	}
-	
+
+	@PutMapping("/{restauranteId}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativar(@PathVariable Long restauranteId) {
+		cadastroRestaurante.ativar(restauranteId);
+	}
+
+	@DeleteMapping("/{restauranteId}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativar(@PathVariable Long restauranteId) {
+		cadastroRestaurante.inativar(restauranteId);
+	}
+
 }
