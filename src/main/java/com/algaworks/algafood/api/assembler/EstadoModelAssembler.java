@@ -21,7 +21,7 @@ public class EstadoModelAssembler {
 	
 	public List<EstadoModel> toCollectionModel(List<Estado> estados) {
 		return estados.stream()
-				.map(this::toModel)
+				.map(estado -> toModel(estado))
 				.collect(Collectors.toList());
 	}
 	

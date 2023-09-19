@@ -1,11 +1,10 @@
 package com.algaworks.algafood.domain.repository;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.algaworks.algafood.domain.model.Cozinha;
 import org.springframework.stereotype.Repository;
 
-import com.algaworks.algafood.domain.model.Cozinha;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CozinhaRepository extends CustomJpaRepository<Cozinha, Long> {

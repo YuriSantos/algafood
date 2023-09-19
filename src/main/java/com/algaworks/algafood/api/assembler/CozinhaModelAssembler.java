@@ -21,7 +21,7 @@ public class CozinhaModelAssembler {
 	
 	public List<CozinhaModel> toCollectionModel(List<Cozinha> cozinhas) {
 		return cozinhas.stream()
-				.map(this::toModel)
+				.map(cozinha -> toModel(cozinha))
 				.collect(Collectors.toList());
 	}
 	
