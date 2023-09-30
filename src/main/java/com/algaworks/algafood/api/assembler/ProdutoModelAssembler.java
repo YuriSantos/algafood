@@ -1,13 +1,14 @@
 package com.algaworks.algafood.api.assembler;
 
-import com.algaworks.algafood.api.model.ProdutoModel;
-import com.algaworks.algafood.domain.model.Produto;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.algaworks.algafood.api.model.ProdutoModel;
+import com.algaworks.algafood.domain.model.Produto;
 
 @Component
 public class ProdutoModelAssembler {
