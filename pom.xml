@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.1</version>
+		<version>3.0.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -22,7 +22,6 @@
 		<aws-java-sdk-s3.version>1.12.204</aws-java-sdk-s3.version>
 		<logback-ext-loggly.version>0.1.5</logback-ext-loggly.version>
 		<dockerfile-maven-version>1.4.13</dockerfile-maven-version>
-		<mysql.version>8.0.33</mysql.version>
 		<springdoc.version>2.0.0</springdoc.version>
 		<springauthserver.version>1.0.0</springauthserver.version>
 	</properties>
@@ -57,7 +56,6 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
