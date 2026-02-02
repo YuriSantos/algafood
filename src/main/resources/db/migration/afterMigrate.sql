@@ -114,7 +114,7 @@ select 3, id from permissao where nome like 'CONSULTAR_%';
 # Adiciona permissoes no grupo cadastrador
 insert into grupo_permissao (grupo_id, permissao_id)
 select 4, id from permissao where nome like '%_RESTAURANTES';
- 
+
 
 insert into usuario (id, nome, email, senha, data_cadastro) values
 (1, 'João da Silva', 'joao.ger@algafood.com.br', '$2y$12$NSsM4gEOR7MKogflKR7GMeYugkttjNhAJMvFdHrBLaLp2HzlggP5W', utc_timestamp),
@@ -131,7 +131,7 @@ insert into usuario_grupo (usuario_id, grupo_id) values (1, 1), (1, 2), (2, 2), 
 insert into restaurante_usuario_responsavel (restaurante_id, usuario_id) values (1, 5), (3, 5);
 
 
-insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, 
+insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep,
                     endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
                   status, data_criacao, subtotal, taxa_frete, valor_total)
 values (1, 'f9981ca4-5a5e-4da3-af04-933861df3e55', 1, 6, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil',
@@ -144,7 +144,7 @@ insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, 
 values (2, 1, 2, 2, 110, 220, 'Menos picante, por favor');
 
 
-insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, 
+insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep,
                     endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
                   status, data_criacao, subtotal, taxa_frete, valor_total)
 values (2, 'd178b637-a785-4768-a3cb-aa1ce5a8cdab', 4, 6, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
@@ -154,7 +154,7 @@ insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, 
 values (3, 2, 6, 1, 79, 79, 'Ao ponto');
 
 
-insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, 
+insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep,
                     endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
                   status, data_criacao, data_confirmacao, data_entrega, subtotal, taxa_frete, valor_total)
 values (3, 'b5741512-8fbc-47fa-9ac1-b530354fc0ff', 1, 7, 1, 1, '38400-222', 'Rua Natal', '200', null, 'Brasil',
@@ -164,7 +164,7 @@ insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, 
 values (4, 3, 2, 1, 110, 110, null);
 
 
-insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, 
+insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep,
                     endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
                   status, data_criacao, data_confirmacao, data_entrega, subtotal, taxa_frete, valor_total)
 values (4, '5c621c9a-ba61-4454-8631-8aabefe58dc2', 1, 7, 1, 1, '38400-800', 'Rua Fortaleza', '900', 'Apto 504', 'Centro',
@@ -174,7 +174,7 @@ insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, 
 values (5, 4, 3, 2, 87.2, 174.4, null);
 
 
-insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, 
+insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep,
                     endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
                   status, data_criacao, data_confirmacao, data_entrega, subtotal, taxa_frete, valor_total)
 values (5, '8d774bcf-b238-42f3-aef1-5fb388754d63', 1, 3, 2, 1, '38400-200', 'Rua 10', '930', 'Casa 20', 'Martins',
@@ -190,7 +190,7 @@ VALUES('1', 'algafood-backend', '2022-11-29 18:58:12', '$2a$10$trk401po.Wx9JXXMs
 
 INSERT INTO oauth2_registered_client
 (id, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_name, client_authentication_methods, authorization_grant_types, redirect_uris, scopes, client_settings, token_settings)
-VALUES('2', 'algafood-web', '2022-11-29 18:58:12', '$2a$10$/Lx1cVKanXiCkpYtdA369OZ78x8aHwx51RTxC.4pqEiuZRzQh0e/i', NULL, 'AlgaFood Web', 'client_secret_basic', 'refresh_token,authorization_code', 'http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html,http://127.0.0.1:8080/authorized', 'READ,WRITE', '{"@class":"java.util.Collections$UnmodifiableMap","settings.client.require-proof-key":false,"settings.client.require-authorization-consent":true}', '{"@class":"java.util.Collections$UnmodifiableMap","settings.token.reuse-refresh-tokens":false,"settings.token.id-token-signature-algorithm":["org.springframework.security.oauth2.jose.jws.SignatureAlgorithm","RS256"],"settings.token.access-token-time-to-live":["java.time.Duration",900.000000000],"settings.token.access-token-format":{"@class":"org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat","value":"self-contained"},"settings.token.refresh-token-time-to-live":["java.time.Duration",86400.000000000],"settings.token.authorization-code-time-to-live":["java.time.Duration",300.000000000]}');
+VALUES('2', 'algafood-web', '2022-11-29 18:58:12', '$2a$10$/Lx1cVKanXiCkpYtdA369OZ78x8aHwx51RTxC.4pqEiuZRzQh0e/i', NULL, 'AlgaFood Web', 'client_secret_basic', 'refresh_token,authorization_code,password', 'http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html,http://127.0.0.1:8080/authorized', 'READ,WRITE', '{"@class":"java.util.Collections$UnmodifiableMap","settings.client.require-proof-key":false,"settings.client.require-authorization-consent":true}', '{"@class":"java.util.Collections$UnmodifiableMap","settings.token.reuse-refresh-tokens":false,"settings.token.id-token-signature-algorithm":["org.springframework.security.oauth2.jose.jws.SignatureAlgorithm","RS256"],"settings.token.access-token-time-to-live":["java.time.Duration",900.000000000],"settings.token.access-token-format":{"@class":"org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat","value":"self-contained"},"settings.token.refresh-token-time-to-live":["java.time.Duration",86400.000000000],"settings.token.authorization-code-time-to-live":["java.time.Duration",300.000000000]}');
 
 INSERT INTO oauth2_registered_client
 (id, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_name, client_authentication_methods, authorization_grant_types, redirect_uris, scopes, client_settings, token_settings)
@@ -198,3 +198,18 @@ VALUES('3', 'foodanalytics', '2022-11-29 18:58:12', '$2a$10$LQOU54Ta7zV7TxTXSk7D
 
 
 unlock tables;
+
+-- Inserir novos usuários
+insert into usuario (id, nome, email, senha, data_cadastro) values
+(9, 'Admin User', 'admin@algafood.com.br', '$2y$12$NSsM4gEOR7MKogflKR7GMeYugkttjNhAJMvFdHrBLaLp2HzlggP5W', utc_timestamp),
+(10, 'Yuri User', 'yuri@algafood.com.br', '$2y$12$NSsM4gEOR7MKogflKR7GMeYugkttjNhAJMvFdHrBLaLp2HzlggP5W', utc_timestamp),
+(11, 'Cliente User', 'cliente@algafood.com.br', '$2y$12$NSsM4gEOR7MKogflKR7GMeYugkttjNhAJMvFdHrBLaLp2HzlggP5W', utc_timestamp);
+
+-- Associar usuários a grupos (opcional)
+-- Grupos existentes: 1: Gerente, 2: Vendedor, 3: Secretária, 4: Cadastrador
+
+-- Associa 'Admin User' ao grupo 'Gerente'
+insert into usuario_grupo (usuario_id, grupo_id) values (9, 1);
+
+-- Associa 'Yuri User' aos grupos 'Vendedor' e 'Cadastrador'
+insert into usuario_grupo (usuario_id, grupo_id) values (10, 2), (10, 4);

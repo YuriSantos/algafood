@@ -17,6 +17,7 @@ import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/v1/restaurantes", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestauranteController implements RestauranteControllerOpenApi {
@@ -53,6 +55,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	@Override
 	@GetMapping
 	public CollectionModel<RestauranteBasicoModel> listar() {
+		log.info("Listando todos os restaurantes");
 		return restauranteBasicoModelAssembler
 				.toCollectionModel(restauranteRepository.findAll());
 	}
@@ -61,6 +64,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	@Override
 	@GetMapping(params = "projecao=apenas-nome")
 	public CollectionModel<RestauranteApenasNomeModel> listarApenasNomes() {
+		log.info("Listando restaurantes (apenas nomes)");
 		return restauranteApenasNomeModelAssembler
 				.toCollectionModel(restauranteRepository.findAll());
 	}
@@ -69,6 +73,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	@Override
 	@GetMapping("/{restauranteId}")
 	public RestauranteModel buscar(@PathVariable Long restauranteId) {
+		log.info("Buscando restaurante com ID: {}", restauranteId);
 		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 		
 		return restauranteModelAssembler.toModel(restaurante);
@@ -79,11 +84,13 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public RestauranteModel adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
+		log.info("Adicionando novo restaurante: {}", restauranteInput.getNome());
 		try {
 			Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
 			
 			return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restaurante));
 		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
+			log.error("Erro ao adicionar restaurante: {}", e.getMessage());
 			throw new NegocioException(e.getMessage());
 		}
 	}
@@ -93,6 +100,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	@PutMapping("/{restauranteId}")
 	public RestauranteModel atualizar(@PathVariable Long restauranteId,
 			@RequestBody @Valid RestauranteInput restauranteInput) {
+		log.info("Atualizando restaurante com ID: {}", restauranteId);
 		try {
 			Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
 			
@@ -100,6 +108,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 			
 			return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restauranteAtual));
 		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
+			log.error("Erro ao atualizar restaurante: {}", e.getMessage());
 			throw new NegocioException(e.getMessage());
 		}
 	}
@@ -109,6 +118,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	@PutMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> ativar(@PathVariable Long restauranteId) {
+		log.info("Ativando restaurante com ID: {}", restauranteId);
 		cadastroRestaurante.ativar(restauranteId);
 		
 		return ResponseEntity.noContent().build();
@@ -119,6 +129,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	@DeleteMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> inativar(@PathVariable Long restauranteId) {
+		log.info("Inativando restaurante com ID: {}", restauranteId);
 		cadastroRestaurante.inativar(restauranteId);
 		
 		return ResponseEntity.noContent().build();
@@ -129,10 +140,12 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	@PutMapping("/ativacoes")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> ativarMultiplos(@RequestBody List<Long> restauranteIds) {
+		log.info("Ativando múltiplos restaurantes: {}", restauranteIds);
 		try {
 			cadastroRestaurante.ativar(restauranteIds);
 			return ResponseEntity.noContent().build();
 		} catch (RestauranteNaoEncontradoException e) {
+			log.error("Erro ao ativar múltiplos restaurantes: {}", e.getMessage());
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
@@ -142,10 +155,12 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	@DeleteMapping("/ativacoes")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> inativarMultiplos(@RequestBody List<Long> restauranteIds) {
+		log.info("Inativando múltiplos restaurantes: {}", restauranteIds);
 		try {
 			cadastroRestaurante.inativar(restauranteIds);
 			return ResponseEntity.noContent().build();
 		} catch (RestauranteNaoEncontradoException e) {
+			log.error("Erro ao inativar múltiplos restaurantes: {}", e.getMessage());
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
@@ -155,6 +170,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	@PutMapping("/{restauranteId}/abertura")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> abrir(@PathVariable Long restauranteId) {
+		log.info("Abrindo restaurante com ID: {}", restauranteId);
 		cadastroRestaurante.abrir(restauranteId);
 		
 		return ResponseEntity.noContent().build();
@@ -165,6 +181,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	@PutMapping("/{restauranteId}/fechamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> fechar(@PathVariable Long restauranteId) {
+		log.info("Fechando restaurante com ID: {}", restauranteId);
 		cadastroRestaurante.fechar(restauranteId);
 		
 		return ResponseEntity.noContent().build();

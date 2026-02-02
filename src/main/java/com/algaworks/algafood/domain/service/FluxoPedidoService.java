@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
 
+@Slf4j
 @Service
 public class FluxoPedidoService {
 
@@ -18,6 +20,7 @@ public class FluxoPedidoService {
 	
 	@Transactional
 	public void confirmar(String codigoPedido) {
+		log.info("Confirmando pedido com código: {}", codigoPedido);
 		Pedido pedido = emissaoPedido.buscarOuFalhar(codigoPedido);
 		pedido.confirmar();
 		
@@ -26,6 +29,7 @@ public class FluxoPedidoService {
 	
 	@Transactional
 	public void cancelar(String codigoPedido) {
+		log.info("Cancelando pedido com código: {}", codigoPedido);
 		Pedido pedido = emissaoPedido.buscarOuFalhar(codigoPedido);
 		pedido.cancelar();
 		
@@ -34,6 +38,7 @@ public class FluxoPedidoService {
 	
 	@Transactional
 	public void entregar(String codigoPedido) {
+		log.info("Entregando pedido com código: {}", codigoPedido);
 		Pedido pedido = emissaoPedido.buscarOuFalhar(codigoPedido);
 		pedido.entregar();
 	}

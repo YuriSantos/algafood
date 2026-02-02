@@ -9,6 +9,7 @@ import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/v1/cozinhas", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CozinhaController implements CozinhaControllerOpenApi {
@@ -45,6 +47,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	@Override
 	@GetMapping
 	public PagedModel<CozinhaModel> listar(@PageableDefault(size = 10) Pageable pageable) {
+		log.info("Consultando cozinhas com paginação: {}", pageable);
 		Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
 		
 		PagedModel<CozinhaModel> cozinhasPagedModel = pagedResourcesAssembler
@@ -57,6 +60,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	@Override
 	@GetMapping("/{cozinhaId}")
 	public CozinhaModel buscar(@PathVariable Long cozinhaId) {
+		log.info("Buscando cozinha com ID: {}", cozinhaId);
 		Cozinha cozinha = cadastroCozinha.buscarOuFalhar(cozinhaId);
 		
 		return cozinhaModelAssembler.toModel(cozinha);
@@ -67,6 +71,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CozinhaModel adicionar(@RequestBody @Valid CozinhaInput cozinhaInput) {
+		log.info("Adicionando nova cozinha: {}", cozinhaInput.getNome());
 		Cozinha cozinha = cozinhaInputDisassembler.toDomainObject(cozinhaInput);
 		cozinha = cadastroCozinha.salvar(cozinha);
 		
@@ -78,6 +83,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	@PutMapping("/{cozinhaId}")
 	public CozinhaModel atualizar(@PathVariable Long cozinhaId,
 			@RequestBody @Valid CozinhaInput cozinhaInput) {
+		log.info("Atualizando cozinha com ID: {}", cozinhaId);
 		Cozinha cozinhaAtual = cadastroCozinha.buscarOuFalhar(cozinhaId);
 		cozinhaInputDisassembler.copyToDomainObject(cozinhaInput, cozinhaAtual);
 		cozinhaAtual = cadastroCozinha.salvar(cozinhaAtual);
@@ -90,6 +96,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	@DeleteMapping("/{cozinhaId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> remover(@PathVariable Long cozinhaId) {
+		log.info("Removendo cozinha com ID: {}", cozinhaId);
 		cadastroCozinha.excluir(cozinhaId);
 		return ResponseEntity.noContent().build();
 	}

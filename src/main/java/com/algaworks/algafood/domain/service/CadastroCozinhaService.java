@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -11,6 +12,7 @@ import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 
+@Slf4j
 @Service
 public class CadastroCozinhaService {
 
@@ -22,27 +24,35 @@ public class CadastroCozinhaService {
 	
 	@Transactional
 	public Cozinha salvar(Cozinha cozinha) {
+		log.info("Salvando cozinha: {}", cozinha.getNome());
 		return cozinhaRepository.save(cozinha);
 	}
 	
 	@Transactional
 	public void excluir(Long cozinhaId) {
+		log.info("Excluindo cozinha com ID: {}", cozinhaId);
 		try {
 			cozinhaRepository.deleteById(cozinhaId);
 			cozinhaRepository.flush();
 			
 		} catch (EmptyResultDataAccessException e) {
+			log.warn("Tentativa de excluir cozinha inexistente com ID: {}", cozinhaId);
 			throw new CozinhaNaoEncontradaException(cozinhaId);
 		
 		} catch (DataIntegrityViolationException e) {
+			log.warn("Cozinha com ID {} está em uso e não pode ser removida", cozinhaId);
 			throw new EntidadeEmUsoException(
 				String.format(MSG_COZINHA_EM_USO, cozinhaId));
 		}
 	}
 	
 	public Cozinha buscarOuFalhar(Long cozinhaId) {
+		log.debug("Buscando cozinha com ID: {}", cozinhaId);
 		return cozinhaRepository.findById(cozinhaId)
-			.orElseThrow(() -> new CozinhaNaoEncontradaException(cozinhaId));
+			.orElseThrow(() -> {
+				log.warn("Cozinha não encontrada com ID: {}", cozinhaId);
+				return new CozinhaNaoEncontradaException(cozinhaId);
+			});
 	}
 	
 }

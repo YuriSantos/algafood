@@ -3,6 +3,7 @@ package com.algaworks.algafood.core.security.authorizationserver;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.UsuarioRepository;
 
+@Slf4j
 @Service
 public class JpaUserDetailsService implements UserDetailsService {
 
@@ -25,9 +27,16 @@ public class JpaUserDetailsService implements UserDetailsService {
 	@Transactional(readOnly = true)
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		log.debug("Buscando usuário pelo e-mail: {}", username);
+
 		Usuario usuario = usuarioRepository.findByEmail(username)
-				.orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com e-mail informado"));
+				.orElseThrow(() -> {
+					log.warn("Usuário não encontrado com e-mail: {}", username);
+					return new UsernameNotFoundException("Usuário não encontrado com e-mail informado");
+				});
 		
+		log.info("Usuário encontrado: {}", usuario.getEmail());
+
 		return new User(usuario.getEmail(), usuario.getSenha(), getAuthorities(usuario));
 	}
 	

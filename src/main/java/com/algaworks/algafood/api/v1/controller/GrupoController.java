@@ -9,6 +9,7 @@ import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.repository.GrupoRepository;
 import com.algaworks.algafood.domain.service.CadastroGrupoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/v1/grupos", produces = MediaType.APPLICATION_JSON_VALUE)
 public class GrupoController implements GrupoControllerOpenApi {
@@ -39,6 +41,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 	@Override
 	@GetMapping
 	public CollectionModel<GrupoModel> listar() {
+		log.info("Listando todos os grupos");
 		List<Grupo> todosGrupos = grupoRepository.findAll();
 		
 		return grupoModelAssembler.toCollectionModel(todosGrupos);
@@ -48,6 +51,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 	@Override
 	@GetMapping("/{grupoId}")
 	public GrupoModel buscar(@PathVariable Long grupoId) {
+		log.info("Buscando grupo com ID: {}", grupoId);
 		Grupo grupo = cadastroGrupo.buscarOuFalhar(grupoId);
 		
 		return grupoModelAssembler.toModel(grupo);
@@ -58,6 +62,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public GrupoModel adicionar(@RequestBody @Valid GrupoInput grupoInput) {
+		log.info("Adicionando novo grupo: {}", grupoInput.getNome());
 		Grupo grupo = grupoInputDisassembler.toDomainObject(grupoInput);
 		
 		grupo = cadastroGrupo.salvar(grupo);
@@ -70,6 +75,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 	@PutMapping("/{grupoId}")
 	public GrupoModel atualizar(@PathVariable Long grupoId,
 			@RequestBody @Valid GrupoInput grupoInput) {
+		log.info("Atualizando grupo com ID: {}", grupoId);
 		Grupo grupoAtual = cadastroGrupo.buscarOuFalhar(grupoId);
 		
 		grupoInputDisassembler.copyToDomainObject(grupoInput, grupoAtual);
@@ -84,6 +90,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 	@DeleteMapping("/{grupoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> remover(@PathVariable Long grupoId) {
+		log.info("Removendo grupo com ID: {}", grupoId);
 		cadastroGrupo.excluir(grupoId);
 		return ResponseEntity.noContent().build();
 	}
