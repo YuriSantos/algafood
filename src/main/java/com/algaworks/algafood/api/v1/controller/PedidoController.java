@@ -19,6 +19,7 @@ import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
 import com.algaworks.algafood.infrastructure.repository.spec.PedidoSpecs;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/v1/pedidos", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PedidoController implements PedidoControllerOpenApi {
@@ -62,6 +64,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 	@GetMapping
 	public PagedModel<PedidoResumoModel> pesquisar(PedidoFilter filtro, 
 			@PageableDefault(size = 10) Pageable pageable) {
+		log.info("Pesquisando pedidos com filtro: {}", filtro);
 		Pageable pageableTraduzido = traduzirPageable(pageable);
 		
 		Page<Pedido> pedidosPage = pedidoRepository.findAll(
@@ -77,6 +80,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public PedidoModel adicionar(@Valid @RequestBody PedidoInput pedidoInput) {
+		log.info("Recebendo novo pedido para o restaurante: {}", pedidoInput.getRestaurante().getId());
 		try {
 			Pedido novoPedido = pedidoInputDisassembler.toDomainObject(pedidoInput);
 
@@ -87,6 +91,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 
 			return pedidoModelAssembler.toModel(novoPedido);
 		} catch (EntidadeNaoEncontradaException e) {
+			log.error("Erro ao emitir novo pedido: {}", e.getMessage());
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
@@ -95,6 +100,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 	@Override
 	@GetMapping("/{codigoPedido}")
 	public PedidoModel buscar(@PathVariable String codigoPedido) {
+		log.info("Buscando pedido com código: {}", codigoPedido);
 		Pedido pedido = emissaoPedido.buscarOuFalhar(codigoPedido);
 		
 		return pedidoModelAssembler.toModel(pedido);

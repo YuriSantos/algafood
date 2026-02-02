@@ -8,6 +8,7 @@ import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.CadastroUsuarioService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/v1/usuarios/{usuarioId}/grupos", 
 	produces = MediaType.APPLICATION_JSON_VALUE)
@@ -36,6 +38,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 	@Override
 	@GetMapping
 	public CollectionModel<GrupoModel> listar(@PathVariable Long usuarioId) {
+		log.info("Listando grupos para o usuário com ID: {}", usuarioId);
 		Usuario usuario = cadastroUsuario.buscarOuFalhar(usuarioId);
 		
 		CollectionModel<GrupoModel> gruposModel = grupoModelAssembler.toCollectionModel(usuario.getGrupos())
@@ -58,6 +61,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 	@DeleteMapping("/{grupoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> desassociar(@PathVariable Long usuarioId, @PathVariable Long grupoId) {
+		log.info("Desassociando grupo {} do usuário {}", grupoId, usuarioId);
 		cadastroUsuario.desassociarGrupo(usuarioId, grupoId);
 		
 		return ResponseEntity.noContent().build();
@@ -68,6 +72,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 	@PutMapping("/{grupoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> associar(@PathVariable Long usuarioId, @PathVariable Long grupoId) {
+		log.info("Associando grupo {} ao usuário {}", grupoId, usuarioId);
 		cadastroUsuario.associarGrupo(usuarioId, grupoId);
 		
 		return ResponseEntity.noContent().build();

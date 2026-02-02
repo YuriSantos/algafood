@@ -11,6 +11,7 @@ import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.UsuarioRepository;
 import com.algaworks.algafood.domain.service.CadastroUsuarioService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/v1/usuarios", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UsuarioController implements UsuarioControllerOpenApi {
@@ -41,6 +43,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	@Override
 	@GetMapping
 	public CollectionModel<UsuarioModel> listar() {
+		log.info("Listando todos os usuários");
 		List<Usuario> todasUsuarios = usuarioRepository.findAll();
 		
 		return usuarioModelAssembler.toCollectionModel(todasUsuarios);
@@ -50,6 +53,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	@Override
 	@GetMapping("/{usuarioId}")
 	public UsuarioModel buscar(@PathVariable Long usuarioId) {
+		log.info("Buscando usuário com ID: {}", usuarioId);
 		Usuario usuario = cadastroUsuario.buscarOuFalhar(usuarioId);
 		
 		return usuarioModelAssembler.toModel(usuario);
@@ -59,6 +63,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public UsuarioModel adicionar(@RequestBody @Valid UsuarioComSenhaInput usuarioInput) {
+		log.info("Adicionando novo usuário: {}", usuarioInput.getNome());
 		Usuario usuario = usuarioInputDisassembler.toDomainObject(usuarioInput);
 		usuario = cadastroUsuario.salvar(usuario);
 		
@@ -70,6 +75,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	@PutMapping("/{usuarioId}")
 	public UsuarioModel atualizar(@PathVariable Long usuarioId,
 			@RequestBody @Valid UsuarioInput usuarioInput) {
+		log.info("Atualizando usuário com ID: {}", usuarioId);
 		Usuario usuarioAtual = cadastroUsuario.buscarOuFalhar(usuarioId);
 		usuarioInputDisassembler.copyToDomainObject(usuarioInput, usuarioAtual);
 		usuarioAtual = cadastroUsuario.salvar(usuarioAtual);
@@ -82,6 +88,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	@PutMapping("/{usuarioId}/senha")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> alterarSenha(@PathVariable Long usuarioId, @RequestBody @Valid SenhaInput senha) {
+		log.info("Alterando senha para o usuário com ID: {}", usuarioId);
 		cadastroUsuario.alterarSenha(usuarioId, senha.getSenhaAtual(), senha.getNovaSenha());
 		return ResponseEntity.noContent().build();
 	}
