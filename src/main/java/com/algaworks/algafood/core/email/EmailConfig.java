@@ -1,5 +1,6 @@
 package com.algaworks.algafood.core.email;
 
+import com.algaworks.algafood.infrastructure.service.email.SesEnvioEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,8 @@ public class EmailConfig {
 				return new SmtpEnvioEmailService();
 			case SANDBOX:
 				return new SandboxEnvioEmailService();
+			case SES:
+				return new SesEnvioEmailService();
 			default:
 				return null;
 		}
