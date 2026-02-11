@@ -1,13 +1,16 @@
-FROM openjdk:17
+# Estágio 1: Build da aplicação com Maven
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean install -DskipTests
 
+# Estágio 2: Criação da imagem final com a JRE
+FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
-ARG JAR_FILE
-
-COPY target/${JAR_FILE} /app/api.jar
-COPY wait-for-it.sh /wait-for-it.sh
-
-RUN chmod +x /wait-for-it.sh
+# Copia o JAR do estágio de build
+COPY --from=build /app/target/*.jar /app/api.jar
 
 EXPOSE 8080
 

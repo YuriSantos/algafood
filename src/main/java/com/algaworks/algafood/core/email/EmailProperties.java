@@ -24,7 +24,7 @@ public class EmailProperties {
 	private Sandbox sandbox = new Sandbox();
 	
 	public enum Implementacao {
-		SMTP, FAKE, SANDBOX
+		SMTP, FAKE, SANDBOX, SES
 	}
 	
 	@Getter
