@@ -3,7 +3,7 @@ package com.algaworks.algafood.core.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.stereotype.Component;
 
 import com.algaworks.algafood.domain.repository.PedidoRepository;
@@ -27,15 +27,17 @@ public class AlgaSecurity {
 	}
 	
 	public Long getUsuarioId() {
-		Jwt jwt = (Jwt) getAuthentication().getPrincipal();
+		Authentication authentication = getAuthentication();
+		Object principal = authentication.getPrincipal();
 
-		Object usuarioId = jwt.getClaim("usuario_id");
-
-		if (usuarioId == null) {
-			return null;
+		if (principal instanceof OAuth2AuthenticatedPrincipal) {
+			Object usuarioId = ((OAuth2AuthenticatedPrincipal) principal).getAttribute("usuario_id");
+			if (usuarioId != null) {
+				return Long.valueOf(usuarioId.toString());
+			}
 		}
-
-		return Long.valueOf(usuarioId.toString());
+		
+		return null;
 	}
 	
 	public boolean gerenciaRestaurante(Long restauranteId) {

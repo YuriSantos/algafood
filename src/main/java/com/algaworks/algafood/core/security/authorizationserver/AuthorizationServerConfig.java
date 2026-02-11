@@ -21,8 +21,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.OAuth2Token;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
@@ -51,7 +49,8 @@ public class AuthorizationServerConfig {
     public SecurityFilterChain authFilterChain(HttpSecurity http,
                                                OAuth2AuthorizationService authorizationService,
                                                AuthenticationConfiguration authenticationConfiguration,
-                                               OAuth2TokenGenerator<?> tokenGenerator) throws Exception {
+                                               OAuth2TokenGenerator<?> tokenGenerator,
+                                               UsuarioRepository usuarioRepository) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
                 new OAuth2AuthorizationServerConfigurer();
 
@@ -79,7 +78,7 @@ public class AuthorizationServerConfig {
         AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
         
         OAuth2PasswordAuthenticationProvider passwordAuthenticationProvider =
-                new OAuth2PasswordAuthenticationProvider(authenticationManager, authorizationService, tokenGenerator);
+                new OAuth2PasswordAuthenticationProvider(authenticationManager, authorizationService, tokenGenerator, usuarioRepository);
 
         http.authenticationProvider(passwordAuthenticationProvider);
 
@@ -124,7 +123,7 @@ public class AuthorizationServerConfig {
     }
 
     @Bean
-    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer(UsuarioRepository usuarioRepository) {
+    public OAuth2TokenCustomizer<OAuth2TokenClaimsContext> tokenCustomizer(UsuarioRepository usuarioRepository) {
         return context -> {
             Authentication authentication = context.getPrincipal();
             if (authentication.getPrincipal() instanceof User) {
@@ -144,12 +143,11 @@ public class AuthorizationServerConfig {
     }
 
     @Bean
-    public OAuth2TokenGenerator<?> tokenGenerator(JWKSource<SecurityContext> jwkSource, OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer) {
-        JwtGenerator jwtGenerator = new JwtGenerator(new NimbusJwtEncoder(jwkSource));
-        jwtGenerator.setJwtCustomizer(jwtCustomizer);
+    public OAuth2TokenGenerator<?> tokenGenerator(OAuth2TokenCustomizer<OAuth2TokenClaimsContext> tokenCustomizer) {
         OAuth2AccessTokenGenerator accessTokenGenerator = new OAuth2AccessTokenGenerator();
+        accessTokenGenerator.setAccessTokenCustomizer(tokenCustomizer);
         OAuth2RefreshTokenGenerator refreshTokenGenerator = new OAuth2RefreshTokenGenerator();
-        return new DelegatingOAuth2TokenGenerator(jwtGenerator, accessTokenGenerator, refreshTokenGenerator);
+        return new DelegatingOAuth2TokenGenerator(accessTokenGenerator, refreshTokenGenerator);
     }
 
     @Bean

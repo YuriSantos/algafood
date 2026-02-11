@@ -11,10 +11,20 @@ public class PedidoStatusListener {
 
     @SqsListener("${algafood.sqs.queue.pedido-status}")
     public void escutarEventoPedido(PedidoStatusAlteradoEvent evento) {
-        log.info("Recebido evento de alteração de status do pedido via SQS: {}", evento.getCodigoPedido());
-        log.info("Novo status: {}", evento.getNovoStatus());
-        
-        // Aqui você implementaria a lógica para reagir ao evento
-        // Por exemplo, enviar um email, notificar outro sistema, etc.
+        try {
+            log.info("Iniciando processamento de evento SQS para o pedido: {}", evento.getCodigoPedido());
+            log.debug("Detalhes do evento: Novo Status={}, RestauranteId={}, ClienteId={}", 
+                    evento.getNovoStatus(), evento.getRestauranteId(), evento.getClienteId());
+            
+            // Simulação de processamento
+            // Aqui você implementaria a lógica real, como enviar notificações, atualizar dashboards, etc.
+            
+            log.info("Evento do pedido {} processado com sucesso.", evento.getCodigoPedido());
+        } catch (Exception e) {
+            log.error("Erro ao processar evento SQS para o pedido: {}", evento.getCodigoPedido(), e);
+            // Lançar a exceção é importante para que o SQS saiba que a mensagem não foi processada
+            // e possa tentar entregá-la novamente (DLQ, retries, etc.)
+            throw e;
+        }
     }
 }
