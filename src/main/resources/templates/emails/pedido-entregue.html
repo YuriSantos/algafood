@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body style="font: 14px Arial, Helvetica, sans-serif">
+    <h1 style="color: #016abc;">Pedido entregue!</h1>
+
+    <p>Olá <span th:text="${pedido.cliente.nome}">João</span>!</p>
+
+    <p>Seu pedido foi entregue com sucesso. Esperamos que tenha gostado!</p>
+
+    <h2 style="color: #016abc;">Resumo do pedido</h2>
+
+    <div>
+        <p>
+            <strong>Pedido:</strong> <span th:text="${pedido.codigo}">00001</span><br/>
+            <strong>Restaurante:</strong> <span th:text="${pedido.restaurante.nome}">Restaurante Exemplo</span><br/>
+            <strong>Data da entrega:</strong> <span th:text="${#temporals.format(pedido.dataEntrega, 'dd/MM/yyyy HH:mm')}">02/02/2025 12:30</span><br/>
+            <strong>Forma de pagamento:</strong> <span th:text="${pedido.formaPagamento.descricao}">Cartão de crédito</span>
+        </p>
+    </div>
+
+    <h3 style="color: #016abc;">Itens do pedido</h3>
+
+    <div th:each="item : ${pedido.itens}">
+        <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #ccc">
+            <span th:text="|${item.quantidade}x ${item.produto.nome}|">1x Produto Exemplo</span>
+            <span style="color: #6c757d;"
+                  th:text="${item.observacao} ? |Obs: ${item.observacao}| : ''">(Obs: sem cebola)</span>
+            <div style="color: #016abc;"
+                 th:text="${#numbers.formatCurrency(item.precoTotal)}">R$ 12,00</div>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <span style="font-weight: bold; font-size: 14px; color: #016abc;">
+            Total: <span th:text="${#numbers.formatCurrency(pedido.valorTotal)}">R$ 35,00</span>
+        </span>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <p>Obrigado por escolher a nossa plataforma!</p>
+        <p>Equipe <span style="color: #016abc;">AlgaFood</span></p>
+    </div>
+
+</body>
+</html>

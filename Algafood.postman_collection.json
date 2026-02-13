@@ -1,0 +1,1246 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
+		"name": "Algafood API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "1. Get Access Token (Password Grant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"accessToken\", jsonData.access_token);",
+									"pm.collectionVariables.set(\"refreshToken\", jsonData.refresh_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password"
+								},
+								{
+									"key": "username",
+									"value": "admin@algafood.com.br"
+								},
+								{
+									"key": "password",
+									"value": "123"
+								},
+								{
+									"key": "scope",
+									"value": "READ WRITE"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/oauth2/token",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						},
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "web123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "algafood-web",
+									"type": "string"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Logout (Revoke Access Token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"accessToken\", null);",
+									"pm.collectionVariables.set(\"refreshToken\", null);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}"
+								},
+								{
+									"key": "token_type_hint",
+									"value": "access_token"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"logout"
+							]
+						},
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "web123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "algafood-web",
+									"type": "string"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cozinhas",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/cozinhas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"cozinhas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/cozinhas/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"cozinhas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Adicionar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Chinesa\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/cozinhas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"cozinhas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Tailandesa\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/cozinhas/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"cozinhas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remover",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/cozinhas/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"cozinhas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Restaurantes",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/restaurantes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"restaurantes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/restaurantes/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"restaurantes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Adicionar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"nome\": \"Comida Mineira\",\n\t\"taxaFrete\": 12,\n\t\"cozinha\": {\n\t\t\"id\": 1\n\t},\n\t\"endereco\": {\n\t\t\"cep\": \"38400-999\",\n\t\t\"logradouro\": \"Rua João Pinheiro\",\n\t\t\"numero\": \"1000\",\n\t\t\"complemento\": null,\n\t\t\"bairro\": \"Centro\",\n\t\t\"cidade\": {\n\t\t\t\"id\": 1\n\t\t}\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/restaurantes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"restaurantes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"nome\": \"Thai Gourmet\",\n\t\"taxaFrete\": 10,\n\t\"cozinha\": {\n\t\t\"id\": 1\n\t},\n\t\"endereco\": {\n\t\t\"cep\": \"38400-999\",\n\t\t\"logradouro\": \"Rua João Pinheiro\",\n\t\t\"numero\": \"1000\",\n\t\t\"complemento\": null,\n\t\t\"bairro\": \"Centro\",\n\t\t\"cidade\": {\n\t\t\t\"id\": 1\n\t\t}\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/restaurantes/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"restaurantes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ativar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/restaurantes/1/ativo",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"restaurantes",
+								"1",
+								"ativo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inativar",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/restaurantes/1/ativo",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"restaurantes",
+								"1",
+								"ativo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Abrir",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/restaurantes/1/abertura",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"restaurantes",
+								"1",
+								"abertura"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fechar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/restaurantes/1/fechamento",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"restaurantes",
+								"1",
+								"fechamento"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Formas de Pagamento",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/formas-pagamento",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"formas-pagamento"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/formas-pagamento/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"formas-pagamento",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Adicionar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"descricao\": \"Pix\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/formas-pagamento",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"formas-pagamento"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"descricao\": \"Cartão de Crédito\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/formas-pagamento/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"formas-pagamento",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remover",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/formas-pagamento/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"formas-pagamento",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cidades",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/cidades",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"cidades"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/cidades/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"cidades",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Adicionar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"nome\": \"Uberlândia\",\n\t\"estado\": {\n\t\t\"id\": 1\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/cidades",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"cidades"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"nome\": \"Belo Horizonte\",\n\t\"estado\": {\n\t\t\"id\": 1\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/cidades/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"cidades",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remover",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/cidades/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"cidades",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Estados",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/estados",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"estados"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/estados/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"estados",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Adicionar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Minas Gerais\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/estados",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"estados"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"São Paulo\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/estados/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"estados",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remover",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/estados/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"estados",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pedidos",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/pedidos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"pedidos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar por Código",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/pedidos/f9981ca4-5a5e-4da3-af04-933861df3e55",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"pedidos",
+								"f9981ca4-5a5e-4da3-af04-933861df3e55"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Adicionar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"restaurante\": {\n\t\t\"id\": 1\n\t},\n\t\"formaPagamento\": {\n\t\t\"id\": 1\n\t},\n\t\"enderecoEntrega\": {\n\t\t\"cep\": \"38400-000\",\n\t\t\"logradouro\": \"Rua Floriano Peixoto\",\n\t\t\"numero\": \"500\",\n\t\t\"complemento\": \"Apto 801\",\n\t\t\"bairro\": \"Brasil\",\n\t\t\"cidade\": {\n\t\t\t\"id\": 1\n\t\t}\n\t},\n\t\"itens\": [\n\t\t{\n\t\t\t\"produtoId\": 1,\n\t\t\t\"quantidade\": 1,\n\t\t\t\"observacao\": \"Menos picante, por favor\"\n\t\t}\n\t]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/pedidos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"pedidos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirmar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/pedidos/f9981ca4-5a5e-4da3-af04-933861df3e55/confirmacao",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"pedidos",
+								"f9981ca4-5a5e-4da3-af04-933861df3e55",
+								"confirmacao"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Entregar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/pedidos/f9981ca4-5a5e-4da3-af04-933861df3e55/entrega",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"pedidos",
+								"f9981ca4-5a5e-4da3-af04-933861df3e55",
+								"entrega"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancelar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/pedidos/f9981ca4-5a5e-4da3-af04-933861df3e55/cancelamento",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"pedidos",
+								"f9981ca4-5a5e-4da3-af04-933861df3e55",
+								"cancelamento"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Grupos",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/grupos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"grupos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/grupos/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"grupos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Adicionar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Gerente\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/grupos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"grupos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Vendedor\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/grupos/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"grupos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remover",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/grupos/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"grupos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Permissões",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/permissoes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"permissoes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Usuários",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/usuarios",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/usuarios/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"usuarios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Adicionar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"nome\": \"João da Silva\",\n\t\"email\": \"joao.ger@algafood.com.br\",\n\t\"senha\": \"123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/usuarios",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"nome\": \"João da Silva\",\n\t\"email\": \"joao.ger@algafood.com.br\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/usuarios/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"usuarios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alterar Senha",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"senhaAtual\": \"123\",\n\t\"novaSenha\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v1/usuarios/1/senha",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"usuarios",
+								"1",
+								"senha"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Estatísticas",
+			"item": [
+				{
+					"name": "Vendas Diárias",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v1/estatisticas/vendas-diarias?restauranteId=1&dataCriacaoInicio=2019-10-30T00:00:00Z&dataCriacaoFim=2019-11-30T23:59:59Z",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v1",
+								"estatisticas",
+								"vendas-diarias"
+							],
+							"query": [
+								{
+									"key": "restauranteId",
+									"value": "1"
+								},
+								{
+									"key": "dataCriacaoInicio",
+									"value": "2019-10-30T00:00:00Z"
+								},
+								{
+									"key": "dataCriacaoFim",
+									"value": "2019-11-30T23:59:59Z"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "refreshToken",
+			"value": ""
+		}
+	]
+}
