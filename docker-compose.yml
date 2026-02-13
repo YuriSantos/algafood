@@ -33,7 +33,7 @@ services:
       - "4510-4559:4510-4559"
     environment:
       - DEBUG=0
-      - SERVICES=sqs,events,ses
+      - SERVICES=sqs,events,ses,s3
       - DOCKER_HOST=unix:///var/run/docker.sock
       - DEFAULT_REGION=us-east-1
     volumes:
